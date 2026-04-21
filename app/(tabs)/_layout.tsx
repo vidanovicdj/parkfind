@@ -39,6 +39,37 @@ export default function TabLayout() {
         }}
       />
 
+      {/* MAPA */}
+      <Tabs.Screen 
+        name="mapa"
+        options={{
+          title: "Mapa",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="map" size={24} color={color} />
+          ),
+        }}
+      />
+
+      {/* PARKING */}
+      <Tabs.Screen
+        name="parking"
+        options={{
+          title: "Rezervacija mesta",
+          href: null,
+        }}
+      />
+
+      {/* RESERVATIONS */}
+      <Tabs.Screen
+        name="reservations"
+        options={{
+          title: "Moje karte",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="card" size={24} color={color} />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 }
