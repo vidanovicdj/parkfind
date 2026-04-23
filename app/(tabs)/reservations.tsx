@@ -26,7 +26,7 @@ export default function ReservationsScreen() {
     ).toISOString();
 
     const { error } = await supabase
-      .from("reservation")
+      .from("reservations")
       .update({ends_at: newTime})
       .eq("id", id);
 
@@ -51,6 +51,9 @@ export default function ReservationsScreen() {
       Alert.alert("Otkazano", "Uspešno ste otkazali parking.");
       fetchUserReservations();
     }
+    else {
+      alert(spotError?.message);
+    }
   }
 
   return (
@@ -72,7 +75,7 @@ export default function ReservationsScreen() {
                   Mesto: {item.parking_spots?.name}
                 </Text>
                 <Text style = {styles.timeText}>
-                    Važi do: {new Date(item.ends_at).toLocaleDateString()}
+                    Važi do: {new Date(item.ends_at).toLocaleTimeString()}
                 </Text>
               </View>
 
@@ -86,7 +89,7 @@ export default function ReservationsScreen() {
 
                 <TouchableOpacity
                   style = {[styles.btn, styles.cancelBtn]}
-                  onPress={() => cancelReservation(item.id, item.ends_at)}
+                  onPress={() => cancelReservation(item.id, item.spot_id)}
                 >
                   <Text style = {styles.btnText}>Otkaži</Text>
                 </TouchableOpacity>
