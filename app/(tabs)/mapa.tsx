@@ -1,3 +1,4 @@
+import { verifyBluetoothPresence } from "@/lib/auth";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -33,6 +34,16 @@ export default function MapScreen() {
     );
   }
 
+  const handleReservation = async () => {
+    const isNearby = await verifyBluetoothPresence();
+    
+    if(isNearby) {
+      router.push('/parking');
+    } else {
+      alert("Niste u blizini parkinga! Uključite Bluetooth i pokušajte ponovo.");
+    }
+  };
+
   return (
     <View style = {styles.container}>
       <MapView
@@ -56,7 +67,7 @@ export default function MapScreen() {
           <Text>Klikni za rezervaciju</Text>
 
           <View style = {{ flexDirection: "row", marginTop: 12, gap: 8 }}>
-            <TouchableOpacity onPress={()=>router.push("/parking")} style = {styles.popupBtn}>
+            <TouchableOpacity onPress={handleReservation} style = {styles.popupBtn}>
               <Text style = {{color: "white", fontWeight:"bold"}}>Rezerviši</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>setSelectedMarker(false)} style = {styles.popupBtn}>
