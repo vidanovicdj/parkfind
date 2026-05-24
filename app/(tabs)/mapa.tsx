@@ -12,8 +12,6 @@ export default function MapScreen() {
   // Custom pop-up
   const [selectedMarker, setSelectedMarker] = useState(false);
 
-  
-
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();

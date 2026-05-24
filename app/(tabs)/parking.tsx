@@ -1,3 +1,4 @@
+import { authUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
@@ -21,6 +22,12 @@ export default function ParkingGrid() {
   }
 
   async function reserveSpot(spot: any) {
+    const isAuthenticated = await authUser();
+    if(!isAuthenticated) {
+      Alert.alert("Neuspešna autentifikacija", "Niste uspeli da se autentifikujete.");
+      return;
+    }
+
     const expiryTime = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
     const { error: resError } = await supabase
