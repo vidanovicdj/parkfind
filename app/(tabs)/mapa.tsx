@@ -3,7 +3,7 @@ import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_DEFAULT, UrlTile } from "react-native-maps";
 
 export default function MapScreen() {
   const [location, setLocation] = useState<Location.LocationObjectCoords | null>(null);
@@ -21,7 +21,19 @@ export default function MapScreen() {
         return;
       }
 
+      // Ovo je za fizicki teleofon
       let userLocation = await Location.getCurrentPositionAsync({});
+      
+      // Ovo je za emulator
+      // let userLocation = await Location.getLastKnownPositionAsync({});
+      // if (!userLocation) {
+      //   return (
+      //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      //       <ActivityIndicator size="large" color="#0000ff" />
+      //       <Text>Učitavanje lokacije i parking mesta...</Text>
+      //     </View>
+      //   );
+      // }
       setLocation(userLocation.coords);
     })();
   }, []);
@@ -47,6 +59,7 @@ export default function MapScreen() {
   return (
     <View style = {styles.container}>
       <MapView
+        provider={PROVIDER_DEFAULT}
         style = {styles.map}
         initialRegion={{
           latitude: 44.8162,
@@ -56,6 +69,11 @@ export default function MapScreen() {
         }}
         showsUserLocation
       >
+        <UrlTile
+          urlTemplate="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maximumZ={19}
+          flipY={false}
+        />
         <Marker 
           coordinate={{ latitude: 44.8162, longitude: 20.4572 }}
           onPress={() => setSelectedMarker(true)}

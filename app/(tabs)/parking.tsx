@@ -1,4 +1,5 @@
 import { authUser } from "@/lib/auth";
+import { setupAndTriggerNotification } from "@/lib/notificationService";
 import { supabase } from "@/lib/supabase";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
@@ -40,7 +41,8 @@ export default function ParkingGrid() {
       .eq("id", spot.id);
 
     if(!resError) {
-        Alert.alert("Uspeh", `Mesto ${spot.name} je rezervisano!`);
+        //Alert.alert("Uspeh", `Mesto ${spot.name} je rezervisano!`);
+        await setupAndTriggerNotification(spot);
         fetchSpots();
     }
   }
