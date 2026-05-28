@@ -55,6 +55,9 @@ export default function TabLayout() {
         name="parking"
         options={{
           title: "Rezervacija mesta",
+          // tabBarIcon: ({ color }) => (
+          //   <Ionicons name="body" size={24} color={color} />
+          // ),
           href: null,
         }}
       />

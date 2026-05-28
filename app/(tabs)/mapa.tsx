@@ -3,7 +3,8 @@ import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import MapView, { Marker, PROVIDER_DEFAULT, UrlTile } from "react-native-maps";
+// import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
+import { default as Mapbox, default as MapboxGL } from '@rnmapbox/maps';
 
 export default function MapScreen() {
   const [location, setLocation] = useState<Location.LocationObjectCoords | null>(null);
@@ -12,6 +13,8 @@ export default function MapScreen() {
 
   // Custom pop-up
   const [selectedMarker, setSelectedMarker] = useState(false);
+
+  Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN ?? '');
 
   useEffect(() => {
     (async () => {
@@ -58,7 +61,7 @@ export default function MapScreen() {
 
   return (
     <View style = {styles.container}>
-      <MapView
+      {/* <MapView
         provider={PROVIDER_DEFAULT}
         style = {styles.map}
         initialRegion={{
@@ -69,16 +72,29 @@ export default function MapScreen() {
         }}
         showsUserLocation
       >
-        <UrlTile
-          urlTemplate="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          maximumZ={19}
-          flipY={false}
-        />
         <Marker 
           coordinate={{ latitude: 44.8162, longitude: 20.4572 }}
           onPress={() => setSelectedMarker(true)}
         />
-      </MapView>
+      </MapView> */}
+
+      <MapboxGL.MapView
+        style = {styles.map}
+        styleURL="https://tiles.openfreemap.org/styles/liberty"
+      >
+        <MapboxGL.Camera
+          zoomLevel={12}
+          centerCoordinate={[20.4572, 44.8162]}
+        />
+        <MapboxGL.PointAnnotation
+          id="marker1"
+          coordinate={[20.4572, 44.8162]}
+          onSelected={() => setSelectedMarker(true)}
+        >
+          <View style = {styles.marker} />
+        </MapboxGL.PointAnnotation>
+      </MapboxGL.MapView>
+
       {selectedMarker && (
         <View style = {styles.popup}>
           <Text style = {{ fontWeight: "bold" }}>Garaža Obilićev Venac</Text>
@@ -107,6 +123,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     overflow: "visible",
+  },
+  marker: {
+    width: 20,
+    height: 20,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'white',
   },
   center: {
     flex: 1,

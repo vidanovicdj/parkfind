@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "parkfind",
+    "name": "ParkFind",
     "slug": "parkfind",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,7 +20,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.parkfind"
+      "package": "com.djurdja.parkfind"
     },
     "web": {
       "output": "static",
@@ -39,11 +39,20 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "@rnmapbox/maps"
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "58ad5bfb-87d2-48b8-acca-1ad932e430d0"
+      }
     }
   }
 }
