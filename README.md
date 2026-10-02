@@ -1,50 +1,115 @@
-# Welcome to your Expo app 👋
+# ParkFind
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Mobilna aplikacija za pronalaženje parking mesta, izrađena u React Native-u (Expo) kao **edukativni primer za nastavu na FON-u**. Cilj projekta je da na jednom, realističnom primeru pokaže osnovne **nativne funkcije** koje se koriste pri razvoju mobilnih aplikacija: lokaciju, kameru, senzore, notifikacije, biometriju i rad sa mapom.
 
-## Get started
+> 🎓 Projekat je namenjen izvođenju nastave na Fakultetu organizacionih nauka (FON). Nije predviđen za produkcionu upotrebu.
 
-1. Install dependencies
+## Šta aplikacija demonstrira
 
-   ```bash
-   npm install
-   ```
+| Nativna funkcija | Primena u aplikaciji | Biblioteka |
+|---|---|---|---|
+| GPS lokacija | prikaz i praćenje trenutne pozicije korisnika | `expo-location` |
+| Mape | prikaz parkinga kroz markere i prilagođene popupe | `@rnmapbox/maps` (Mapbox) |
+| Skeniranje QR koda | očitavanje koda na parking mestu | `[expo-camera]` |
+| Biometrijska autentifikacija | prijava otiskom prsta / licem | `expo-local-authentication` |
+| Zvuk | zvučni signal pri detekciji | `[expo-audio]`|
+| Vibracija (haptika) | vibracioni odgovor pri detekciji | `[expo-haptics]` |
+| Push notifikacije | obaveštenja i notification channels na Androidu | `expo-notifications` |
+| Backend i autentifikacija | skladištenje podataka i prijava korisnika | Supabase |
 
-2. Start the app
+## Ciljevi učenja
 
-   ```bash
-   npx expo start
-   ```
+Nakon prolaska kroz projekat, student treba da razume:
+- kako se traže i obrađuju **dozvole** (permissions) za nativne funkcije
+- razliku između **Expo Go** i **development build-a** i zašto neke biblioteke rade samo u drugom
+- kako se rade **konfiguracija i izgradnja** aplikacije pomoću EAS Build-a
+- kako se bezbedno upravlja **tokenima i tajnim ključevima**
+- kako izgleda **file-based routing** (Expo Router)
 
-In the output, you'll find options to open the app in a
+## Tehnologije
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- React Native + Expo (Expo Router)
+- TypeScript
+- Mapbox (`@rnmapbox/maps`)
+- Supabase
+- EAS Build, `expo-dev-client`
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Struktura projekta
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+.
+├── app/          # ekrani i rutiranje (Expo Router)
+├── components/   # višekratno upotrebljive komponente
+├── constants/    # konstante (boje, konfiguracija)
+├── hooks/        # prilagođeni React hook-ovi
+├── lib/          # integracije (npr. Supabase klijent)
+├── scripts/      # pomoćne skripte
+└── assets/       # slike i resursi
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Pokretanje projekta
 
-## Learn more
+### Preduslovi
+- Node.js i npm
+- Android Studio (emulator) ili Android uređaj
+- Nalog na [Expo](https://expo.dev), [Mapbox](https://mapbox.com) i [Supabase](https://supabase.com)
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Instalacija
+```bash
+git clone https://github.com/vidanovicdj/parkfind.git
+cd parkfind
+npm install
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 2. Promenljive okruženja
 
-## Join the community
+Napravi `.env` fajl na osnovu `.env.example`:
 
-Join our community of developers creating universal apps.
+```bash
+cp .env.example .env
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Promenljiva | Opis |
+|---|---|
+| `EXPO_PUBLIC_MAPBOX_TOKEN` | javni Mapbox token (počinje sa `pk.`) |
+| `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | tajni Mapbox token za preuzimanje SDK-a (počinje sa `sk.`, scope `DOWNLOADS:READ`) |
+| `EXPO_PUBLIC_SUPABASE_URL` `[proveri]` | URL Supabase projekta |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY` `[proveri]` | javni (anon) ključ |
+
+> ⚠️ Tajni token (`sk.`) se **nikada ne upisuje u kod** niti commit-uje. `.env` je u `.gitignore`.
+
+Za EAS Build se ove vrednosti dodaju kao **EAS environment variables** (`eas env:create` ili preko Expo dashboard-a).
+
+### 3. Pokretanje na Androidu
+
+Aplikacija koristi nativne module (Mapbox i dr.), pa **ne radi u Expo Go-u**. Potreban je development build:
+
+```bash
+npx expo run:android
+```
+
+Ili kroz EAS:
+```bash
+eas build --profile development --platform android
+```
+
+Zatim pokreni razvojni server:
+```bash
+npx expo start --dev-client
+```
+
+## Dozvole
+
+Aplikacija traži sledeće dozvole (prilikom prvog korišćenja funkcije):
+
+| Dozvola | Zašto |
+|---|---|
+| Lokacija | prikaz pozicije na mapi |
+| Kamera | skeniranje QR koda |
+| Bluetooth | detekcija beacon-a |
+| Notifikacije | slanje obaveštenja |
+| Biometrija | prijava otiskom prsta / licem |
+
+## Poznata ograničenja
+- Udaljene push notifikacije ne rade u Expo Go-u (od SDK 53), potreban je development build
+- Za rad mape potrebni su Mapbox tokeni
